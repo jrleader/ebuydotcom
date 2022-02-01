@@ -1,0 +1,150 @@
+
+<!-- templates/base.html -->
+
+{% from 'macros.html' import file_url %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    {% block title %}
+    <title>{{ config['SITE_NAME'] }}</title>
+    {% endblock %}
+
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+
+    {% block css %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"/>
+    <link href="../static/base.css", rel="stylesheet"/>
+    {% endblock %}
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <!-- <a class="navbar-brand" href="/">\u6DD8\u8D1D\u7F51</a> -->
+      <a href="/">
+        <img src="../static/site_logo@1x_small.jpg" alt="易买网"/>
+      </a>      
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li
+            class="nav-item {{ 'active' if request.path.startswith('/product') else '' }}"
+          >
+            <a class="nav-link" href="/products"
+              > 商品 <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li
+            class="nav-item {{ 'active' if request.path.startswith('/shop') else '' }}"
+          >
+            <a class="nav-link" href="/shops">商城</a>
+          </li>
+        </ul>
+        <div>
+          {% if current_user.is_authenticated %}
+          <a
+            class="btn btn-link text-light"
+            href="{{ url_for('cart_product.index') }}"
+            >购物车</a
+          >
+          <div class="d-inline dropdown">
+            <button
+              class="btn btn-link dropdown-toggle text-light"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {% if current_user.avatar %}
+              <img
+                width="30"
+                height="30"
+                class="rounded-circle"
+                src="{{ file_url(current_user.avatar) }}"
+              />
+              {% endif %} {{ current_user.username }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{{ url_for('user.profile') }}"
+                >用户资料</a
+              >
+              <a class="dropdown-item" href="{{ url_for('user.avatar') }}"
+                >虚拟形象</a
+              >
+              <a class="dropdown-item" href="{{ url_for('user.password') }}"
+                >密码修改</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('user.wallet') }}"
+                >钱包</a
+              >
+              <a class="dropdown-item" href="{{ url_for('address.index') }}"
+                >收货地址</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('order.index') }}"
+                >订单</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('user.logout') }}"
+                >登出</a
+              >
+            </div>
+          </div>
+          {% else %}
+            <a class="btn btn-success" href="#">登录</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="min-height: 900px;">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block body %}{% endblock %}
+    </div>
+
+    <!-- <div class="bg-dark p-3 text-light d-flex align-items-center small" -->
+    <div class="bg-dark p-3 text-light d-flex align-items-center small"
+    >
+      <span class="ml-auto">Copyright @2018-2018 易买网</span>
+    </div>
+
+    {% block js %}
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    {% endblock %}
+  </body>
+</html>

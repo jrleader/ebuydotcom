@@ -1,0 +1,151 @@
+
+<!-- templates/base.html -->
+
+{% from 'macros.html' import file_url %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    {% block title %}
+    <title>{{ config['SITE_NAME'] }}</title>
+    {% endblock %}
+
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+
+    {% block css %}
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+    {% endblock %}
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <a class="navbar-brand" href="/">\u6DD8\u8D1D\u7F51</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li
+            class="nav-item {{ 'active' if request.path.startswith('/product') else '' }}"
+          >
+            <a class="nav-link" href="/products"
+              >\u5546\u54C1 <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li
+            class="nav-item {{ 'active' if request.path.startswith('/shop') else '' }}"
+          >
+            <a class="nav-link" href="/shops">\u5E97\u94FA</a>
+          </li>
+        </ul>
+        <div>
+          {% if current_user.is_authenticated %}
+          <a
+            class="btn btn-link text-light"
+            href="{{ url_for('cart_product.index') }}"
+            >\u8D2D\u7269\u8F66</a
+          >
+          <div class="d-inline dropdown">
+            <button
+              class="btn btn-link dropdown-toggle text-light"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {% if current_user.avatar %}
+              <img
+                width="30"
+                height="30"
+                class="rounded-circle"
+                src="{{ file_url(current_user.avatar) }}"
+              />
+              {% endif %} {{ current_user.username }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{{ url_for('user.profile') }}"
+                >\u7F16\u8F91\u8D44\u6599</a
+              >
+              <a class="dropdown-item" href="{{ url_for('user.avatar') }}"
+                >\u8BBE\u7F6E\u5934\u50CF</a
+              >
+              <a class="dropdown-item" href="{{ url_for('user.password') }}"
+                >\u4FEE\u6539\u5BC6\u7801</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('user.wallet') }}"
+                >\u94B1\u5305</a
+              >
+              <a class="dropdown-item" href="{{ url_for('address.index') }}"
+                >\u6536\u8D27\u5730\u5740</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('order.index') }}"
+                >\u6211\u7684\u8BA2\u5355</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{ url_for('user.logout') }}"
+                >\u9000\u51FA</a
+              >
+            </div>
+          </div>
+          {% else %}
+            <a class="btn btn-success" href="{{ url_for('user.login') }}">\u767B\u5F55</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="min-height: 900px;">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block body %}{% endblock %}
+    </div>
+
+    <div
+      class="bg-dark p-3 text-light d-flex align-items-center small"
+      style="height: 60px;"
+    >
+      <a href="https://www.lanqiao.cn" target="_blank">\u5B9E\u9A8C\u697C</a>
+      <span class="ml-auto">Copyright @2018-2018 \u6DD8\u8D1D\u7F51</span>
+    </div>
+
+    {% block js %}
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    {% endblock %}
+  </body>
+</html>

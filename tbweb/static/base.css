@@ -1,0 +1,25 @@
+* {
+    box-sizing: border-box;
+}
+
+img#site_logo {
+    position: relative;
+    float: left; 
+    max-height: 100px;
+    max-width: 100px;
+}
+
+div.bg-dark {
+    display: flex;
+
+    /* center the text */
+    align-items: center;
+    justify-content: center;
+    /* *** */
+    height: 60px;
+}
+
+div span.ml-auto {
+    text-align: center;
+   
+}
