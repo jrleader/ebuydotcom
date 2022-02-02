@@ -1,0 +1,137 @@
+from http.client import NOT_FOUND
+
+from werkzeug.exceptions import BadRequest
+
+from flask import Blueprint, request, current_app
+from sqlalchemy import or_
+
+from tblib.model import session
+from tblib.handler import json_response, ResponseCode
+
+from ..models import Shop, ShopSchema, Product, ProductSchema
+
+# 注册蓝本
+product = Blueprint('product', __name__, url_prefix='/products')
+
+@product.route('', methods=['POST'])
+def create_product():
+    '''
+    新建商品
+    '''
+
+    data = request.get_json()
+
+    pdt_sch = ProductSchema()
+    pdt = pdt_sch.load(data)
+
+    session.add(pdt)
+
+    session.commit()
+
+    return json_response(product=pdt_sch.dump(pdt))
+
+@product.route('', methods=['GET'])
+def get_product_list():
+    '''
+    获取商品列表
+    '''
+
+    # 配置查询条件
+    shop_id = request.args.get('shop_id', type=int)
+    limit = request.args.get('limit', current_app.config['PAGINATION_PER_PAGE'], type=int)
+
+    offset = request.args.get('offset', 0, type=int)
+
+    order_dir = request.args.get('order_direction', 'desc')
+
+    order_by = Product.id.asc() if order_dir == 'asc' else Product.id.desc()
+
+    query = Product.query
+
+    if shop_id is not None:
+        query = query.filter(Product.shop_id == shop_id)
+        total_no_of_prods = query.count()
+        query =  query.order_by(order_by)\
+                        .limit(limit)\
+                        .offset(offset)
+    # else:
+        # return json_response(ResponseCode.NOT_FOUND, message='No matching products given the shop_id:{}'.format(shop_id))
+    
+    return json_response(product = ProductSchema().dump(query, many=True), total=total_no_of_prods)
+
+@product.route('/<int:id>', methods=['POST'])
+def update_product(id):
+    '''
+    更新商品
+    '''
+
+    # 获取更新数据
+    data = request.get_json()
+
+    schema = ProductSchema()
+
+    query = Product.query
+
+    # 根据id更新对应商品
+    updated_count = query.filter(Product.id == id).update(data)
+
+    if updated_count == 0: # 不存在商品id为id的商品
+        return json_response(ResponseCode.NOT_FOUND)
+
+    # 获取更新后的商品
+    prod = query.get(id)
+
+    session.commit() # 提交查询（！！！）
+
+    new_prod = ProductSchema.load(data)
+
+    return json_response(product=schema.dump(new_prod))
+
+@product.route('/<int:id>', methods=['GET'])
+def get_prod_info_by_id(id):
+    '''
+    按产品id获取产品信息
+    '''
+    prod = Product.query.get(id)
+
+    if prod == None:
+        return json_response(ResponseCode.NOT_FOUND, message='Product not found with id:{}'.format(id))
+
+    return json_response(product=ProductSchema().dump(prod))
+
+@product.route('/infos', methods=['GET'])
+def product_infos():
+    """批量查询商品，查询指定 ID 列表里的多个商品
+    """
+
+    ids = []
+
+    requested_ids =  request.args.get('ids', '').split(',')
+    for v in requested_ids:
+        id = int(v.strip())
+        if id > 0:
+            ids.append(id)
+    if len(ids) == 0:
+        raise BadRequest()
+
+    query = Product.query.filter(Product.id.in_(ids)) # 查找产品id等于id列表中任一的商品
+
+    products = {product.id: ProductSchema().dump(product) for product in query}
+
+    return json_response(products=products)
+
+@product.route('/<int:id>', methods=['DELETE'])
+def remove_product(id):
+    '''
+    按产品id移除商品
+    '''
+    # count = Product.query.remove(id)
+    prod_to_remove = Product.query.get(id)
+
+    if prod_to_remove == None:
+        return json_response(NOT_FOUND, message='Product to remove not found with id:{}'.format(id))
+    
+    session.delete(prod_to_remove)
+    session.commit()
+        
+    return json_response(product = ProductSchema().dump(prod_to_remove), delete_count=1)
