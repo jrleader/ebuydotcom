@@ -2,13 +2,16 @@ from flask import Blueprint, request, current_app
 from sqlalchemy import and_
 from tenacity import retry_never
 
-from tblib.model import session
+# from tblib.model import session
 from tblib.handler import json_response, ResponseCode
-from tbmall.models import favourite_product
 
 from ..models import FavouriteProduct, FavouriteProductSchema
 
+from ..models import get_db_session
+
 fav_product = Blueprint("favourite_product", __name__, url_prefix='/favourites')
+
+session = next(get_db_session())
 
 @fav_product.route('', methods=['POST'])
 def create_fav_product():
@@ -52,7 +55,7 @@ def get_fav_product_list():
         query = query.filter(FavouriteProduct.user_id == user_id)
     elif prod_id is not None:
         query = query.filter(FavouriteProduct.product_id == prod_id)
-    else: return json_response(ResponseCode.NOT_FOUND, message='Favourite product not found with the given user_id and product_id!')
+    # else: return json_response(ResponseCode.NOT_FOUND, message='Favourite product not found with the given user_id and product_id!')
 
     fav_prod_count = query.count()
     res = query.order_by(order_by)\
@@ -86,8 +89,10 @@ def delete_fav_product(id):
 
     if fav_prod_to_del == None:
         return json_response(ResponseCode.NOT_FOUND, message='Favourite product to delete not found with id:{}'.format(id))
+
+    fav_prod_to_del_local = session.merge(fav_prod_to_del)
     
-    session.delete(fav_prod_to_del)
+    session.delete(fav_prod_to_del_local)
     session.commit()
 
     return json_response(favourite_product=FavouriteProductSchema().dump(fav_prod_to_del),delete_count=1)

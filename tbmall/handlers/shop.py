@@ -2,10 +2,15 @@ import json
 from flask import Blueprint, request, current_app
 from sqlalchemy import or_
 
-from tblib.model import session
+# from tblib.model import session
 from tblib.handler import json_response, ResponseCode
 
 from ..models import Shop, ShopSchema, Product, ProductSchema
+
+from ..models import get_db_session
+
+session = get_db_session()
+session = next(session)
 
 shop = Blueprint('shop', __name__, url_prefix='/shops')
 
@@ -47,6 +52,8 @@ def shop_list():
     # 获取商铺列表的查询语句
     query = Shop.query
 
+    total_no_of_shops = query.count()
+
     if user_id is not None:
         query = query.filter(Shop.user_id == user_id)
         total_no_of_shops = query.count()
@@ -59,7 +66,7 @@ def shop_list():
 
 
     # 可能返回不止一家店铺，所以many=True
-    return json_response(shop=ShopSchema.dump(query, many=True), total=total_no_of_shops)
+    return json_response(shop=ShopSchema().dump(query, many=True), total=total_no_of_shops)
 
 @shop.route('/<int:id>', methods=['POST'])
 def update_shop(id):
@@ -102,16 +109,16 @@ def del_shop(id):
     '''
     query = Shop.query
 
-    count = query.remove(id)
+    shop = query.get(id)
+
+    if shop == None:
+        return json_response(ResponseCode.NOT_FOUND)
+
+    session.delete(shop)
 
     session.commit()
 
-    if isinstance(count, Shop) and count is None:
-        return json_response(ResponseCode.NOT_FOUND)
-    elif count == 0:
-        return json_response(ResponseCode.NOT_FOUND)
-
-    return json_response(deleted_count = count)
+    return json_response(deleted_shop = ShopSchema().dump(shop))
 
 
 
