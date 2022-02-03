@@ -14,7 +14,7 @@ migrate = Migrate()
 
 def init(app):
 	# Will only be fully initialized after the Flask app is started
-	global db,dbsession,migrate 
+	global db,session,migrate 
 
 	db=SQLAlchemy(app)
 	print('Connected to database {}'.format(db))
