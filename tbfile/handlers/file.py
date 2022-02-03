@@ -1,8 +1,8 @@
 # handlers/file.py
 
-from ast import Try
 from concurrent.futures import ThreadPoolExecutor
 from importlib.util import resolve_name
+import json
 from os import path
 from turtle import down
 from urllib import response
@@ -92,6 +92,22 @@ def create_file():
     # Generate json response
     return json_response(id='{}{}'.format(id, ext))
 
+@file.route('/files', methods=['GET'])
+def get_file_list():
+    '''
+    Get the list of available files
+    '''
+    file_list = []
+
+    files = GridFS(mongo.db).find().sort('uploadDate',-1).limit(3)
+    for f in files:
+        print(f)
+        # print(f.read())
+        file_list.append(f)
+    
+    res = FileSchema().dump(file_list, many=True)
+
+    return json_response(file=res)
 
 @file.route('/files/<id>', methods=['GET'])
 def file_info(id):
