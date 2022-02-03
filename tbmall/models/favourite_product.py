@@ -7,7 +7,6 @@ from marshmallow import Schema, fields, post_load
 from .base import Base
 from .product import ProductSchema
 
-
 class FavouriteProduct(Base):
     __tablename__ = 'favorite_products'
     # 在表参数中设置索引
@@ -20,7 +19,7 @@ class FavouriteProduct(Base):
 
     user_id = Column(Integer, nullable=False)
     product_id = Column(Integer, ForeignKey(
-        'product.id', ondelete='CASCADE'), nullable=False)
+        'products.id', ondelete='CASCADE'), nullable=False)
     product = relationship('Product', uselist=False, backref=backref('favourites', lazy='dynamic')) 
     # 描述一对多关系，并向Product模型中添加一个属性'favourites'，从而定义反向关系（被多少用户收藏）
 
@@ -34,5 +33,5 @@ class FavouriteProductSchema(Schema):
     updated_at = fields.DateTime()
 
     @post_load
-    def make_favorite_product(self, data):
+    def make_favorite_product(self, data, many=False, partial=False):
         return FavouriteProduct(**data)

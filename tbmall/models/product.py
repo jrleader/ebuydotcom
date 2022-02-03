@@ -23,7 +23,7 @@ class Product(Base):
     price = Column(Integer, nullable=False)
     skus_in_stock = Column(Integer, nullable=False)
     shop_id = Column(Integer, ForeignKey(
-        'shop.id', ondelete='CASCADE'), nullable=False) # 这里的ondelete参数指如果shop表中的shop_id被删除的话，
+        'shops.id', ondelete='CASCADE'), nullable=False) # 这里的ondelete参数指如果shop表中的shop_id被删除的话，
         # 那么product表中的也删除
     # shop = relationship('Shop', uselist=False,
                         # backref=backref('products', lazy='dynamic'))
