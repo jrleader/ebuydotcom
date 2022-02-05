@@ -21,7 +21,7 @@ def init_handler(app):
 
     init(app)
 
-# 把项目根目录添加到path
+# 把项目根目录添加到path，避免在引用时找不到对应package
 file = Path(__file__).resolve()  
 # print(file)
 package_root_directory = file.parents[1]  
