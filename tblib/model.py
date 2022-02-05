@@ -2,14 +2,14 @@
 
 # Initialization of the connection object that connects to SQLAlchemy
 
-from sqlalchemy.orm.session import Session
+# from sqlalchemy.orm.session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 # The vars are initialized here so that the IDE can infer the types of those objects and thus
 # autocompletion can be used 
 db = SQLAlchemy() 
-session = Session()
+# session = Session()
 migrate = Migrate()
 
 def init(app):
@@ -18,5 +18,5 @@ def init(app):
 
 	db=SQLAlchemy(app)
 	print('Connected to database {}'.format(db))
-	session = db.session
+	# session = db.session
 	migrate = Migrate(app, db)
