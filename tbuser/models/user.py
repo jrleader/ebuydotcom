@@ -1,4 +1,3 @@
-from psutil import NIC_DUPLEX_UNKNOWN
 from sqlalchemy import Column, Integer, String, null
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,8 +16,7 @@ class User(Base):
 
     username = Column(String(20), nullable=False, unique=True)
 
-    # 私有
-    _password = Column('password', String(20), nullable=False)
+    password_hash = Column('password_hash', String(128), nullable=False) # 只存储密码散列值，不存储密码本身
 
     # 头像图片地址
     avatar = Column(String(200), nullable=False, default='') 
@@ -31,16 +29,19 @@ class User(Base):
 
     @property
     def password(self):
-        return self._password
+        raise AttributeError("Password is not accessible!")
 
     @password.setter
     def password(self, password):
         # 使用密码加盐哈希函数对输入的密码加密
-        self._password = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password)
 
     # 核对密码
-    def check_password(self, password):
-        return check_password_hash(self._password, password)
+    def check_password(self, password): 
+        '''
+        验证用户输入的密码散列值是否与原始密码散列值一致
+        '''
+        return check_password_hash(self.password_hash, password)
 
 class UserSchema(Schema):
     id = fields.Int()
