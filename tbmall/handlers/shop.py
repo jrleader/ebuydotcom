@@ -2,15 +2,15 @@ import json
 from flask import Blueprint, request, current_app
 from sqlalchemy import or_
 
-# from tblib.model import session
+from tblib.model import session
 from tblib.handler import json_response, ResponseCode
 
 from ..models import Shop, ShopSchema, Product, ProductSchema
 
-from ..models import get_db_session
+# from ..models import session
 
-session = get_db_session()
-session = next(session)
+# session = get_db_session()
+# session = next(session)
 
 shop = Blueprint('shop', __name__, url_prefix='/shops')
 

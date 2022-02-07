@@ -18,5 +18,6 @@ def init(app):
 
 	db=SQLAlchemy(app)
 	print('Connected to database {}'.format(db))
-	# session = db.session
+	session = db.session
+	print('Session created {}, binded to {}'.format(session, session.get_bind()))
 	migrate = Migrate(app, db)

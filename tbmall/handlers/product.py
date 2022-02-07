@@ -1,23 +1,18 @@
-from http.client import NOT_FOUND
-from mysqlx import Session
-import sqlalchemy
-
 from werkzeug.exceptions import BadRequest
 
 from flask import Blueprint, request, current_app
 from sqlalchemy import or_
 
-# from tblib.model import session
-from ..models import get_db_session
+from tblib.model import session
+# from ..models import get_db_session
 from tblib.handler import json_response, ResponseCode
 
 from ..models import Shop, ShopSchema, Product, ProductSchema
+# from ..models import session
 
 # 注册蓝本
 product = Blueprint('product', __name__, url_prefix='/products')
 
-session = get_db_session()
-session = next(session)
 
 @product.route('', methods=['POST'])
 def create_product():
@@ -137,7 +132,7 @@ def remove_product(id):
     prod_to_remove = Product.query.get(id)
 
     if prod_to_remove == None:
-        return json_response(NOT_FOUND, message='Product to remove not found with id:{}'.format(id))
+        return json_response(ResponseCode.NOT_FOUND, message='Product to remove not found with id:{}'.format(id))
 
     # 规避“Object ... is already attached to session ...问题"
     prod_to_remove_local = session.merge(prod_to_remove)

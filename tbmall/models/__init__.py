@@ -10,9 +10,10 @@ from sqlalchemy import create_engine
 
 from ..config import BaseConfig
 
-engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI)
+engine = create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI, echo=True)
 sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = Session()
+
+session = Session() # 先创建好Session便于引用
 
 def get_db_session():
     global session
@@ -21,3 +22,5 @@ def get_db_session():
         yield session
     finally:
         session.close()
+
+get_db_session() # 创建和engine绑定的session，该session会在tblib.model类中被读取到
