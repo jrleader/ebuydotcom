@@ -2,6 +2,7 @@ from utils import Cryptog as cg
 
 class BaseConfig(object):
     # 这里涉及到数据传递，需要设置 SECRET_KEY
+    # 用于登录身份验证
     SECRET_KEY = '4bOoOz6GFmF5vVEPd0SvyOOt7m2b16l6'
     # 设置服务监听地址：http://0.0.0.0:5020
     LISTENER = ('0.0.0.0', 5020)
