@@ -16,7 +16,7 @@ class User(Base):
 
     username = Column(String(20), nullable=False, unique=True)
 
-    password_hash = Column('password_hash', String(128), nullable=False) # 只存储密码散列值，不存储密码本身
+    _password = Column('password_hash', String(128), nullable=False) # 只存储密码散列值，不存储密码本身
 
     # 头像图片地址
     avatar = Column(String(200), nullable=False, default='') 
@@ -34,22 +34,23 @@ class User(Base):
     @password.setter
     def password(self, password):
         # 使用密码加盐哈希函数对输入的密码加密
-        self.password_hash = generate_password_hash(password)
+        self._password = generate_password_hash(password)
 
     # 核对密码
     def check_password(self, password): 
         '''
         验证用户输入的密码散列值是否与原始密码散列值一致
         '''
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self._password, password)
 
 class UserSchema(Schema):
     id = fields.Int()
     username = fields.Str()
+    _password = fields.Str()
     avatar = fields.Str()
-    Gender = fields.Str()
+    gender = fields.Str()
     mobile = fields.Str()
-    wallet_money = fields.Str()
+    wallet_money = fields.Int()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
 

@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, String, null, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, null, DateTime
 from sqlalchemy.orm import relationship, backref
 
 from marshmallow import Schema, fields, post_load
 
 from .base import Base
+
+from .user import UserSchema
 
 class Transaction(Base):
 
@@ -16,16 +18,18 @@ class Transaction(Base):
     note = Column(String(200), nullable=False, default='')
 
     # 付款人
-    payer_id = Column(Integer, nullable=False)
+    payer_id = Column(Integer, ForeignKey(
+        'users.id', ondelete='CASCADE'), nullable=False)
 
     # 收款人
-    payee_id = Column(Integer, nullable=False)
+    payee_id = Column(Integer,  ForeignKey(
+        'users.id', ondelete='CASCADE'), nullable=False)
 
     # 日期
     date = Column(DateTime, nullable=False)
 
     # 地址
-    order_date = Column(String(200), nullable=False)
+    order_addr = Column(String(200), nullable=False)
 
     # payee, payer都与User相关，和Transaction是一对多关系
     payee = relationship('User', uselist=False, foreign_keys=[payee_id], backref=backref('payee_transactions', lazy='dynamic'))
@@ -45,6 +49,13 @@ class TransactionSchema(Schema):
     note = fields.Str()
     payer_id = fields.Int()
     payee_id = fields.Int()
+
+    date = fields.DateTime()
+
+    order_addr = fields.Str()
+
+    payer = fields.Nested(UserSchema)
+    payee = fields.Nested(UserSchema)
 
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
