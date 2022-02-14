@@ -61,11 +61,6 @@
         </ul>
         <div>
           {% if current_user.is_authenticated %}
-          <a
-            class="btn btn-link text-light"
-            href="{{ url_for('cart_product.index') }}"
-            >购物车</a
-          >
           <div class="d-inline dropdown">
             <button
               class="btn btn-link dropdown-toggle text-light"
@@ -98,13 +93,6 @@
               <a class="dropdown-item" href="{{ url_for('user.wallet') }}"
                 >钱包</a
               >
-              <a class="dropdown-item" href="{{ url_for('address.index') }}"
-                >收货地址</a
-              >
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{{ url_for('order.index') }}"
-                >订单</a
-              >
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{{ url_for('user.logout') }}"
                 >登出</a
@@ -112,7 +100,8 @@
             </div>
           </div>
           {% else %}
-            <a class="btn btn-success" href="#">登录</a>
+            <a class="btn btn-success" href="{{ url_for('user.login') }}">登录</a>
+            <a class="btn btn-success" href="{{ url_for('user.register') }}">注册</a>
           {% endif %}
         </div>
       </div>
