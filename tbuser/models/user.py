@@ -21,7 +21,7 @@ class User(Base):
     # 头像图片地址
     avatar = Column(String(200), nullable=False, default='') 
 
-    gender = Column(String(1), nullable=False)
+    gender = Column(String(1))
 
     mobile = Column(String(11), unique=True)
 
