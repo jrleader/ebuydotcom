@@ -30,7 +30,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <!-- <a class="navbar-brand" href="/">\u6DD8\u8D1D\u7F51</a> -->
       <a href="/">
-        <img src="../static/site_logo@1x_small.jpg" alt="易买网"/>
+        <img src="../static/site_logo@1x_small.jpg" alt="易买网" style="width: 40%;height: 40%;"/>
       </a>      
       <button
         class="navbar-toggler"
@@ -44,14 +44,15 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- 用justify-content-between实现一左一右定位 -->
+      <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent"> 
         <ul class="navbar-nav mr-auto">
           <li
             class="nav-item {{ 'active' if request.path.startswith('/product') else '' }}"
           >
-            <a class="nav-link" href="/products"
+            <!-- <a class="nav-link" href="/products"
               > 商品 <span class="sr-only">(current)</span></a
-            >
+            > -->
           </li>
           <li
             class="nav-item {{ 'active' if request.path.startswith('/shop') else '' }}"
