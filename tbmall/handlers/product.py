@@ -60,7 +60,7 @@ def get_product_list():
     # else:
         # return json_response(ResponseCode.NOT_FOUND, message='No matching products given the shop_id:{}'.format(shop_id))
     
-    return json_response(product = ProductSchema().dump(query, many=True), total=total_no_of_prods)
+    return json_response(products = ProductSchema().dump(query, many=True), total=total_no_of_prods)
 
 @product.route('/<int:id>', methods=['POST'])
 def update_product(id):
