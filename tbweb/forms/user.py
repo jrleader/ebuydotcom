@@ -10,6 +10,11 @@ from wtforms.validators import Required, Optional, Length, Email, EqualTo, DataR
 
 from ..services import EbUser
 
+from ..config import BaseConfig
+
+base_url_user = BaseConfig.SERVICE_TBUSER['addresses'][0]
+
+
 # 注册表单
 class RegisterForm(FlaskForm):
     username = StringField('用户名', validators=[Required(), Length(2, 20)])
@@ -21,7 +26,7 @@ class RegisterForm(FlaskForm):
     # 验证用户名
     def validate_username(self, field):
         # 使用 GET 方式向后台的用户服务接口 /users 地址发送查询用户名的请求，获取返回数据
-        resp = EbUser(current_app).get_json('/users', params={
+        resp = EbUser(current_app).get_json('{}/users'.format(base_url_user), params={
             'username': field.data,
         })
         # 如果存在用户数据就抛出异常
