@@ -1,6 +1,5 @@
 from flask import Blueprint, request, current_app
 from sqlalchemy import and_
-from tenacity import retry_never
 
 from tblib.model import session
 from tblib.handler import json_response, ResponseCode
