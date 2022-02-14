@@ -5,4 +5,5 @@ common = Blueprint('common',__name__,url_prefix='/')
 
 @common.route('')
 def index():
-	return render_template('index.html', current_user='Xiaoming')
+	# return render_template('index.html', current_user=None) # Need to change it to refleect the info of the logged-in user
+	return render_template('index.html')
