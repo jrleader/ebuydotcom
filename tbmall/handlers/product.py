@@ -104,22 +104,39 @@ def get_prod_info_by_id(id):
 
 @product.route('/infos', methods=['GET'])
 def product_infos():
-    """批量查询商品，查询指定 ID 列表里的多个商品
+    """批量查询商品，查询指定ID和商品ID列表里的多个商品
     """
 
     ids = []
 
+    shop_ids = []
+
     requested_ids =  request.args.get('ids', '').split(',')
-    for v in requested_ids:
-        id = int(v.strip())
-        if id > 0:
-            ids.append(id)
-    if len(ids) == 0:
+
+    if len(requested_ids) > 0:
+        for v in requested_ids:
+            id = int(v.strip())
+            if id > 0:
+                ids.append(id)
+
+    requested_shop_ids = request.args.get('sids','').split(',')
+
+    if len(requested_shop_ids) > 0: # Shop_id是可选参数，如果请求里没有那么不抛出异常
+        for v in requested_shop_ids:
+            sid = int(v.strip())
+            if sid > 0:
+                shop_ids.append(sid)
+    
+    if len(requested_ids) == 0 and len(requested_shop_ids) == 0:
         raise BadRequest()
+    
+    if len(ids) > 0:
+        results = Product.query.filter(Product.id.in_(ids)) # 查找产品id等于id列表中任一的商品
 
-    query = Product.query.filter(Product.id.in_(ids)) # 查找产品id等于id列表中任一的商品
+    if len(shop_ids) > 0:
+        results = Product.query.filter(Product.shop_id.in_(shop_ids)) # 查找产品所属商铺id属于商铺列表中任一的产品
 
-    products = {product.id: ProductSchema().dump(product) for product in query}
+    products = {product.id: ProductSchema().dump(product) for product in results}
 
     return json_response(products=products)
 
