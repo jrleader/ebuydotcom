@@ -1,5 +1,8 @@
 from .common import common
 from .user import user
+from .product import product
+from .shop import shop
+
 from ..models import User
 
 from ..services import EbUser
@@ -16,6 +19,9 @@ base_url_user =  BaseConfig.SERVICE_TBUSER['addresses'][0]
 def init(app):
     app.register_blueprint(common)
     app.register_blueprint(user)
+    app.register_blueprint(product)
+    app.register_blueprint(shop)
+
 
     init_login_manager(app)
 
