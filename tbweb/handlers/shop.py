@@ -13,7 +13,7 @@ base_url_mall = BaseConfig.SERVICE_TBMALL['addresses'][0]
 base_url_user = BaseConfig.SERVICE_TBUSER['addresses'][0]
 
 
-@shop.route('')
+@shop.route('', methods=['GET'])
 def index():
     '''
     店铺列表
@@ -24,7 +24,7 @@ def index():
     page = request.args.get('page', 1, type=int)
 
     # 每页要显示的商品数量
-    lim = current_app.config['PAGINATION_PER_PAGE']
+    lim = request.args.get('limit', current_app.config['PAGINATION_PER_PAGE'], type=int)
 
     # 每页要展示的商品数偏移量, 保证每页的商品可以正常显示
     offset = (page - 1) * lim
@@ -51,7 +51,7 @@ def index():
         for shop in shops:
             owner_id = str(shop['user_id'])
             
-            shops['user'] = resp['data']['users'].get(owner_id)
+            shop['user'] = resp['data']['users'].get(owner_id)
         
     # 获取每个店铺的商品，在店铺列表页每个店铺显示三件
 
@@ -78,10 +78,11 @@ def index():
             if(len(products) < PRODS_PER_SHOP): # 如果商品数小于三个，添加商品到列表
                 products.append(p)
                 shop['products'] = products
+                # shops.set(shop, str(p['shop_id']))
     
     return render_template('shop/index.html', shops=shops, total=total)
             
-@shop.route('/<int:id>')
+@shop.route('/<int:id>', methods=['GET'])
 def shop_details(id):
     '''
     店铺详情
@@ -114,5 +115,5 @@ def shop_details(id):
 
     shop_prods = resp['data']['products']
 
-    return render_template('shops/detail.html', shop=shop, products = shop_prods)
+    # return render_template('shops/detail.html', shop=shop, products = shop_prods)
     return render_template('shops/detail.html', shop=shop, **resp['data'])
