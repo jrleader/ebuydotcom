@@ -6,14 +6,14 @@
 
     <!-- 商品缩略图和描述，点击显示商品详情 -->
     <a href="{{ url_for('product.detail', id=item['id']) }}">
-        <img class="w-100" src="{{ file_url(item['cover']) }}" />
+        <img class="w-100" src="{{ file_url(item['cover']) }}" alt="item" />
         <p class="text-truncate">{{ item['title'] }}</p>
     </a>
 
     <!-- 商品价格和所属店铺，点击店铺名称显示店铺详情 -->
     <div class="d-flex justify-content-between">
         <span class="text-monospace text-info">¥{{ item['price'] }}</span>
-        <a href="{{ url_for('shop.detail', id=item['shop']['id']) }}">
+        <a href="{{ url_for('shop.shop_details', id=item['shop']['id']) }}">
             <span class="d-inline-block text-truncate"
             >{{ item['shop']['name'] }}</span
             >

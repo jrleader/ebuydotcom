@@ -20,10 +20,10 @@
     <!-- 商品列表 -->
     <div class="d-flex flex-wrap justify-content-center">
         {% for product in products %} 
-            product_macro(product)
+            {{ product_macro(product) }}
         {% endfor %}
     </div>
 
-    {{ pagination(total / config['PAGINATION_PER_PAGE'])|round(0,'ceil')|int, request.args.get('page',1)|int, 'product.index'}}
+    {{ pagination((total / config['PAGINATION_PER_PAGE'])|round(0,'ceil')|int, request.args.get('page',1)|int, 'product.index')}}
 
 {% endblock %}

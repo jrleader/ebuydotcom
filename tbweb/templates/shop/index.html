@@ -3,7 +3,7 @@
 
 {% from 'product/macros.html' import product as product_macro %}
 
-{% from 'shop/macros.html' % import shop as shop_macro %}
+{% from 'shop/macros.html' import shop as shop_macro %}
 
 {% extends 'base.html' %} 
 
@@ -31,10 +31,6 @@
     <div class="col-6 col-md-8 col-lg-9">
         <!-- Flex container -->
         <div class="d-flex flex-wrap">
-
-        {% for product in shop.get('products', [])[:3] %}
-            {{ product_macro(product) }}
-        {% endfor %}
         </div>
     </div>
 </div>
