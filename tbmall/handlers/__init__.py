@@ -1,4 +1,3 @@
-import flask.app
 from tblib.handler import handle_error_json
 
 from .product import product
