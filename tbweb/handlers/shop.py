@@ -3,6 +3,8 @@
 from flask import Blueprint, render_template, redirect, request, current_app
 from graphviz import render
 
+from tblib.service import ServiceResponseNotOk
+
 from ..services import EbFile, EbMall, EbUser, EbBuy
 
 from ..config import BaseConfig
@@ -69,17 +71,37 @@ def index():
         # for s in shops:
             # s['prod_count'] = 0 # 用于追踪需要在商品页面上为每个店铺显示的商品数，单店铺最多三个
         
+        shops_dict = {str(shop['id']): shop for shop in shops}
+
+        # for k,v in shops.items():
+        #     print('shop_id: {}, shop_info: {}'.format(k,v))
+
         # 将商品信息赋予店铺
         for p in products:
-            shop = shops.get(str(p['shop_id']))
+            # print(type(products))
+            # print(p)
+            # print(products[p])
+            # print('Current prod: {}'.format(p))
+            shop = shops_dict.get(str(products[p]['shop_id']))
 
-            products = shop['products']
+            if 'products' in shop.keys():
+                products_in_shop = shop['products']
+                if(len(products) < PRODS_PER_SHOP): # 如果商品数小于三个，添加商品到列表
+                    products_in_shop.append(p)
+                    shop['products'] = products_in_shop
+            else:
+                products_in_shop = []
+                products_in_shop.append(p)
+                shop['products'] = products_in_shop
 
-            if(len(products) < PRODS_PER_SHOP): # 如果商品数小于三个，添加商品到列表
-                products.append(p)
-                shop['products'] = products
-                # shops.set(shop, str(p['shop_id']))
-    
+        # 遍历商铺列表，并逐个获取商铺所销售商品
+        # for shop in shops:
+        #     resp = EbMall(current_app).get_json('{}/products'.format(base_url_mall), params={
+
+        #     })
+        shops = [shops_dict[i] for i in shops_dict]
+        # for i,j in enumerate(shops):
+            # print('rendered shop id {}, shop {}'.format(i,j))
     return render_template('shop/index.html', shops=shops, total=total)
             
 @shop.route('/<int:id>', methods=['GET'])
@@ -95,9 +117,22 @@ def shop_details(id):
 
     # 获取与商铺id对应的商铺主信息
 
-    resp = EbUser(current_app).get_json('{}/users/{}'.format(base_url_user, str(shop['user_id'])))
+    shop_owner = None
 
-    shop_owner = resp['data']['user']
+    if shop['user_id']:
+        try:
+            resp = EbUser(current_app).get_json('{}/users/{}'.format(base_url_user, str(shop['user_id'])))
+        except ServiceResponseNotOk as e:
+            print(e)
+
+        if 'user' in resp['data']:
+            shop_owner = resp['data']['user']
+
+            shop['user'] = shop_owner        
+        else:
+            shop['user'] = None
+    else:
+        shop['user'] = None
 
     # 获取店铺商品信息
 
@@ -114,6 +149,8 @@ def shop_details(id):
     })
 
     shop_prods = resp['data']['products']
-
+    total_product_count = resp['data']['total']
     # return render_template('shops/detail.html', shop=shop, products = shop_prods)
-    return render_template('shops/detail.html', shop=shop, **resp['data'])
+    # return render_template('shop/detail.html', shop=shop, **resp['data'])
+    return render_template('shop/detail.html', shop=shop, products=shop_prods, total=total_product_count)
+
