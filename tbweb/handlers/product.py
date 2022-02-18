@@ -8,7 +8,7 @@ from ..config import BaseConfig
 
 base_url_mall = BaseConfig.SERVICE_TBMALL['addresses'][0]
 
-product = Blueprint('products', __name__, url_prefix='/products')
+product = Blueprint('product', __name__, url_prefix='/products')
 
 @product.route('', methods=['GET'])
 def index():
