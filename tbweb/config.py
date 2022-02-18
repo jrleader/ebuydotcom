@@ -12,13 +12,13 @@ class BaseConfig(object):
     SITE_NAME = '易买网'
     PAGINATION_PER_PAGE = 20
 
-    DOMAIN_TBFILE = 'http://localhost:5040'
+    DOMAIN_TBFILE = 'http://localhost:5050' # 可能要修改成在运行时动态获取 （环境变量）
 
     SERVICE_TBBUY = {
         'addresses': ['http://localhost:5030'],
     }
     SERVICE_TBFILE = {
-        'addresses': ['http://localhost:5040'],
+        'addresses': ['http://localhost:5050'],
     }
     SERVICE_TBMALL = {
         'addresses': ['http://localhost:5020'],
