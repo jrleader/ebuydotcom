@@ -96,7 +96,7 @@ def get_user_info(id):
 
     return json_response(user=UserSchema().dump(user))
 
-@user.route('/infos', methods=['POST'])
+@user.route('/infos', methods=['GET'])
 def get_user_infos():
     '''
     批量查询用户信息
