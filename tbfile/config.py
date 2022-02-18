@@ -1,7 +1,7 @@
 # config.py
 
 class BaseConfig:
-    LISTENER = ('0.0.0.0', 5040) # Address of the file service
+    LISTENER = ('0.0.0.0', 5050) # Address of the file service
 
     MONGO_URI = 'mongodb://localhost:27017/tbfile'
 
