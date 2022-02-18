@@ -1,4 +1,4 @@
-from utils import Cryptog as cg
+from .utils.utils import Cryptog as cg
 
 class BaseConfig(object):
     # 这里涉及到数据传递，需要设置 SECRET_KEY
