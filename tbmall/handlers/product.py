@@ -111,25 +111,38 @@ def product_infos():
 
     shop_ids = []
 
-    requested_ids =  request.args.get('ids', '').split(',')
-
-    if len(requested_ids) > 0:
-        for v in requested_ids:
-            id = int(v.strip())
-            if id > 0:
-                ids.append(id)
-
-    requested_shop_ids = request.args.get('sids','').split(',')
-
-    if len(requested_shop_ids) > 0: # Shop_id是可选参数，如果请求里没有那么不抛出异常
-        for v in requested_shop_ids:
-            sid = int(v.strip())
-            if sid > 0:
-                shop_ids.append(sid)
+    requested_ids =  request.args.get('ids')
     
-    if len(requested_ids) == 0 and len(requested_shop_ids) == 0:
+    if requested_ids:
+        requested_ids = requested_ids.split(',')
+
+        if len(requested_ids) > 0: # Request_id是可选参数
+            for v in requested_ids:
+                id = int(v.strip())
+                if id > 0:
+                    ids.append(id)
+
+    requested_shop_ids = request.args.get('sids')
+
+    if requested_shop_ids:
+        requested_shop_ids = requested_shop_ids.split(',')
+
+        if len(requested_shop_ids) > 0: # Shop_id是可选参数，如果请求里没有那么不抛出异常
+            for v in requested_shop_ids:
+                sid = int(v.strip())
+                if sid > 0:
+                    shop_ids.append(sid)
+    
+    if not requested_ids and not requested_shop_ids: # 如果请求中Request_id和Shop_id均不存在，那么抛出异常
         raise BadRequest()
+
+    # if not requested_ids or not requested_shop_ids or (len(requested_ids) == 0 and len(requested_shop_ids) == 0):
+    if (len(requested_ids) == 0):
+        if (len(requested_shop_ids) == 0 or not requested_shop_ids):
+            raise BadRequest()
     
+
+    # Todo：基于id和shop_id的查询是否存在依赖？N
     if len(ids) > 0:
         results = Product.query.filter(Product.id.in_(ids)) # 查找产品id等于id列表中任一的商品
 
