@@ -137,8 +137,8 @@ def product_infos():
         raise BadRequest()
 
     # if not requested_ids or not requested_shop_ids or (len(requested_ids) == 0 and len(requested_shop_ids) == 0):
-    if (len(requested_ids) == 0):
-        if (len(requested_shop_ids) == 0 or not requested_shop_ids):
+    if (requested_ids and len(requested_ids) == 0):
+        if ((requested_ids and len(requested_shop_ids) == 0) or not requested_shop_ids):
             raise BadRequest()
     
 
