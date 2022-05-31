@@ -1,0 +1,65 @@
+$ tree -L 2
+.
+├── README.md
+├── requirements.txt
+├── supervisord.conf
+├── tbbuy # 购买服务
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── handlers
+│   ├── migrations
+│   └── models
+├── tbfile # 文件服务
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── handlers
+│   └── models
+├── tblib # 公共库
+│   ├── __init__.py
+│   ├── handler.py
+│   ├── model.py
+│   ├── mongo.py
+│   └── service.py
+├── tbmall # 商城服务
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── handlers
+│   ├── migrations
+│   └── models
+├── tbuser # 用户服务
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── handlers
+│   ├── migrations
+│   └── models
+├── tbweb # 前台网站
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── forms
+│   ├── handlers
+│   ├── models
+│   ├── services
+│   ├── static
+│   └── templates
+├── tbadmin # 管理后台
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── forms
+│   ├── handlers
+│   ├── models
+│   ├── services
+│   ├── static
+│   └── templates
+└── venv # 虚拟环境
+    ├── bin
+    ├── include
+    ├── lib
+    ├── pip-selfcheck.json
+    ├── pyvenv.cfg
+    └── share
