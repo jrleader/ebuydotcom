@@ -1,0 +1,54 @@
+{% from 'macros.html' import file_url %}
+
+{% from 'product/macros.html' import product as product_macro %}
+
+{% extends "base.html" %}
+
+{% block title %}
+    <title>{{ config['SITE_NAME'] }} - 商品详情</title>
+{% endblock %}
+
+{% block body %}
+
+<!-- 面包屑导航 -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">首页</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('shop.index') }}">店铺列表</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('shop.shop_details', id=product['shop']['id']) }}">店铺详情</a></li>
+        <li class="breadcrumb-item active" aria-current="page">商品详情</li> <!-- 为什么不用商品列表 -> 商品详情这样的导航结构？-->
+    </ol>
+</nav>
+
+<div class="row">
+    <!-- 商品缩略图 -->
+    <div class="col-4">
+        <a href="{{ url_for('product.detail', id=product['id']) }}">
+        <img class="w-100" src="{{ file_url(product['cover']) }}" />
+    </div>
+
+    <!-- 商品详情 -->
+    <div class="col-8 d-flex flex-column justify-content-around">
+        <div>
+            <h5>{{ product['title'] }}</h5>
+            <p> {{ product['description'] or '暂无描述' }}</p>
+        </div>
+        <div>
+            <p>
+                价格: <span class="text-monospace text-success">
+                    ¥{{ product['price'] }}
+                </span>
+            </p>
+            <p>
+                剩余<span class="text-monospace text-success">{{ product['skus_in_stock'] }}</span>件
+            </p>
+            <p>
+                <!-- <a class="btn btn-primary" -->
+                <!-- href="{{ url_for('cart_product.add', product_id=product['id']) }}"></a> -->
+                <a class="btn btn-primary" href="#">加入购物车</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

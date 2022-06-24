@@ -1,0 +1,18 @@
+{% from 'macros.html' import file_url %}
+
+{% macro shop(item) -%}
+
+    <div class="media">
+        <!-- 为每个店铺显示三件商品 -->
+        <img class = "mr-3" src = "{{ file_url(item['cover']) }}", style="width: 70px"/> 
+
+        <!-- 显示店铺信息 -->
+        <a href="{{ url_for('shop.shop_details', id = item['id']|int) }}">
+            <h5 class="mt-0">{{ item['name'] }}</h5>
+        </a>
+        <div class = "media-body">
+            <p class="text-secondary">店主：用户{{ item['user']['username'] }}</p>
+            <p class="text-secondary">{{ item['description'] }}</p>
+        </div>
+    </div>
+{%- endmacro %}
